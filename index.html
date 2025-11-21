@@ -21,22 +21,24 @@
 
     <h2>About Me</h2>
     <p>
-      I'm interested in systems programming, game engines, and the design of large-scale MMOs and virtual worlds.
-      I like exploring the history of game development and rebuilding classic engine techniques to understand how they worked.
-      My goal is to help create persistent virtual worlds that others can explore and shape.
+      My interests center on game engines, game development, and systems programming. I enjoy studying
+      the systems and mechanisms that support large-scale online worlds. I'm especially interested in simulations, particularly the possibilities
+      of using AI to generate history, narrative, and emergent behavior within virtual worlds. 
+      <br>
+      I like working on projects where I can rebuild or reimplement classic engine techniques, 
+      study their tradeoffs, and understand how performant software is constructed from the ground up.
     </p>
     <p>
-      Languages I use: C, Python, Go, SQL
+      Languages I use: Python, C, Go, SQL
     </p>
 
     <hr noshade>
 
-    <h2>Snake Game</h2>
+    <h2>Snake Game | Controls: WASD</h2>
     <div id="game-container" style="text-align: center; margin: 20px 0;">
       <canvas id="canvas" width="512" height="512" style="border: 2px solid #333; background: #1a1a1a;"></canvas>
       <div id="game-status" style="margin-top: 10px;">
-        <button id="start-button" onclick="startGame()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Start Game</button>
-        <p id="loading-status" style="margin-top: 10px; color: #666;"></p>
+        <p id="loading-status" style="margin-top: 10px; color: #666;">Loading game…</p>
       </div>
     </div>
 
@@ -48,6 +50,8 @@
 
     <script>
       // Configure Emscripten Module before loading
+      let gameReady = false;
+
       var Module = {
         canvas: (function() {
           var canvas = document.getElementById('canvas');
@@ -68,30 +72,16 @@
         },
         onRuntimeInitialized: function() {
           console.log('WASM module initialized');
-          document.getElementById('loading-status').textContent = 'Game loaded! Click Start Game to play.';
-          document.getElementById('start-button').disabled = false;
+          gameReady = true;
+          document.getElementById('loading-status').textContent = 'Game ready! Click the canvas and use WASD to play.';
           // Focus canvas immediately so it can receive input
           Module.canvas.focus();
         }
       };
 
-      let gameStarted = false;
-
-      function startGame() {
-        if (gameStarted) {
-          return;
-        }
-        gameStarted = true;
-        document.getElementById('start-button').style.display = 'none';
-        document.getElementById('loading-status').textContent = 'Game running! Use WASD keys to control. Click the canvas to focus it.';
-        
-        // Focus the canvas so keyboard input works
-        Module.canvas.focus();
-      }
-
       // Prevent default behavior for game keys
       window.addEventListener('keydown', function(e) {
-        if (gameStarted && ['w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(e.key)) {
+        if (gameReady && ['w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(e.key)) {
           e.preventDefault();
         }
       });
