@@ -31,8 +31,76 @@
 
     <hr noshade>
 
+    <h2>Snake Game</h2>
+    <div id="game-container" style="text-align: center; margin: 20px 0;">
+      <canvas id="canvas" width="512" height="512" style="border: 2px solid #333; background: #1a1a1a;"></canvas>
+      <div id="game-status" style="margin-top: 10px;">
+        <button id="start-button" onclick="startGame()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Start Game</button>
+        <p id="loading-status" style="margin-top: 10px; color: #666;"></p>
+      </div>
+    </div>
+
+    <hr noshade>
+
     <address>
       Last updated: 2025-11-12 • Hosted on GitHub Pages • <a href="/">jacobnunes.xyz</a>
     </address>
+
+    <script>
+      // Configure Emscripten Module before loading
+      var Module = {
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+          // Make canvas focusable for keyboard input
+          canvas.setAttribute('tabindex', '0');
+          canvas.style.outline = 'none';
+          canvas.addEventListener("webglcontextlost", function(e) {
+            alert('WebGL context lost. You will need to reload the page.');
+            e.preventDefault();
+          }, false);
+          return canvas;
+        })(),
+        print: function(text) {
+          console.log(text);
+        },
+        printErr: function(text) {
+          console.error(text);
+        },
+        onRuntimeInitialized: function() {
+          console.log('WASM module initialized');
+          document.getElementById('loading-status').textContent = 'Game loaded! Click Start Game to play.';
+          document.getElementById('start-button').disabled = false;
+          // Focus canvas immediately so it can receive input
+          Module.canvas.focus();
+        }
+      };
+
+      let gameStarted = false;
+
+      function startGame() {
+        if (gameStarted) {
+          return;
+        }
+        gameStarted = true;
+        document.getElementById('start-button').style.display = 'none';
+        document.getElementById('loading-status').textContent = 'Game running! Use WASD keys to control. Click the canvas to focus it.';
+        
+        // Focus the canvas so keyboard input works
+        Module.canvas.focus();
+      }
+
+      // Prevent default behavior for game keys
+      window.addEventListener('keydown', function(e) {
+        if (gameStarted && ['w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(e.key)) {
+          e.preventDefault();
+        }
+      });
+
+      // Make canvas clickable to focus
+      document.getElementById('canvas').addEventListener('click', function() {
+        this.focus();
+      });
+    </script>
+    <script src="snake.js"></script>
   </body>
 </html>

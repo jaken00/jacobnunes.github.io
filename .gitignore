@@ -1,0 +1,23 @@
+# Build artifacts
+snake.js
+snake.wasm
+snake.html
+*.wasm
+*.js.map
+
+# Emscripten
+*.o
+*.bc
+
+# Build scripts and configs
+Makefile
+build.bat
+build.sh
+build.ps1
+serve.bat
+README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
