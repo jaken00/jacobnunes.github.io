@@ -1,5 +1,5 @@
 # Build artifacts
-snake.js
+
 snake.wasm
 snake.html
 *.wasm
